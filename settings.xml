@@ -1,0 +1,37 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <activeProfiles>
+        <activeProfile>github</activeProfile>
+    </activeProfiles>
+
+    <profiles>
+        <profile>
+            <id>github</id>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>https://repo1.maven.org/maven2</url>
+                </repository>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/asean-build-the-earth/alps-lib-asean</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+
+    <servers>
+        <server>
+            <id>aseanbte-repo</id>
+            <username>asean-build-the-earth</username>
+            <!-- Public token with `read:packages` scope -->
+            <password>&#103;&#104;&#112;&#95;&#74;&#103;&#120;&#105;&#121;&#107;&#56;&#107;&#80;&#114;&#49;&#118;&#51;&#74;&#113;&#111;&#66;&#102;&#74;&#113;&#97;&#76;&#56;&#79;&#56;&#116;&#118;&#85;&#89;&#70;&#52;&#78;&#118;&#87;&#78;&#89;</password>
+        </server>
+    </servers>
+</settings>

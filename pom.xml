@@ -55,7 +55,7 @@
     </properties>
     <distributionManagement>
         <repository>
-            <id>github</id>
+            <id>aseanbte-repo</id>
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/asean-build-the-earth/alps-lib-asean</url>
         </repository>
