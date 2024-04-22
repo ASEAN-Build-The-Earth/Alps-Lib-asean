@@ -29,7 +29,6 @@ import de.oliver.fancynpcs.api.FancyNpcsPlugin;
 import de.oliver.fancynpcs.api.Npc;
 import de.oliver.fancynpcs.api.NpcData;
 import de.oliver.fancynpcs.api.utils.SkinFetcher;
-import me.filoghost.holographicdisplays.api.Position;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -70,7 +69,7 @@ public abstract class AbstractNpc {
         npc.getData().setOnlyVisibleTo(true);
         npc.create();
         FancyNpcsPlugin.get().getNpcManager().registerNpc(npc);
-        hologram = new NpcHologram(IDENTIFIER_TAG + id, Position.of(spawnPos), this);
+        hologram = new NpcHologram(IDENTIFIER_TAG + id, spawnPos, this);
         activeNPCs.add(this);
     }
 
@@ -78,7 +77,7 @@ public abstract class AbstractNpc {
         if (npc == null) return;
         npc.getData().showToPlayer(player.getUniqueId());
         npc.spawn(player);
-        if (hologram != null && player.getWorld().getName().equals(hologram.getPosition().getWorldName()))
+        if (hologram != null && player.getWorld().getName().equals(hologram.getLocation().getWorld().getName()))
             Bukkit.getScheduler().runTask(FancyNpcs.getInstance().getPlugin(), () -> hologram.create(player));
     }
 
@@ -88,7 +87,7 @@ public abstract class AbstractNpc {
         npc.spawnForAll();
         if (hologram != null) {
             Bukkit.getOnlinePlayers().forEach(player -> {
-                if (player.getWorld().getName().equals(hologram.getPosition().getWorldName()))
+                if (player.getWorld().getName().equals(hologram.getLocation().getWorld().getName()))
                     Bukkit.getScheduler().runTask(FancyNpcs.getInstance().getPlugin(), () -> hologram.create(player));
             });
         }
@@ -102,7 +101,7 @@ public abstract class AbstractNpc {
     }
 
     public void setActionTitleVisibility(UUID playerUUID, boolean isVisible, boolean enableGlow) {
-        if (hologram != null && hologram.getHologram(playerUUID) != null && !hologram.getHologram(playerUUID).isDeleted())
+        if (hologram != null && hologram.getHologram(playerUUID) != null && !hologram.getHologram(playerUUID).isDisabled())
             hologram.setActionTitleVisibility(playerUUID, isVisible);
         if (npc != null) {
             if (npc.getData().isGlowing() != enableGlow) {

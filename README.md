@@ -1,26 +1,34 @@
-# AlpsLib
+# ASEAN Lib
+This is the ASEAN BTE implementation of AlpsLib package.
+> To use the latest version of AlpsLib, you need to add the following dependencies to your pom.xml. You can find a list of all dependencies here:
+> </br>https://mvn.alps-bte.com/#browse/browse:alps-lib
 
 ## Modules
-To use the latest version of AlpsLib, you need to add the following dependencies to your pom.xml. You can find a list of all dependencies here:
-</br>https://mvn.alps-bte.com/#browse/browse:alps-lib
+The package is hosted in Github Package therefore an access key is required to authorize the package endpoints.
+
 
 Repository
 ```xml
 <repositories>
     <repository>
-        <id>alpsbte-repo</id>
-        <url>https://mvn.alps-bte.com/repository/alps-bte/</url>
+        <id>aseanbte-repo</id>
+        <url>https://maven.pkg.github.com/asean-build-the-earth/</url>
     </repository>
 </repositories>
 ```
 
 Replace ```latest``` with the version of the module you want to use. You can find a list of all versions by clicking the link above.
 
-### AlpsLib-Hologram
-Includes an abstract HolographicDisplay which can be used to create custom holograms.
+### AseanLib-Hologram
+Implemented DecentHologram Plugin
+Includes an abstract DecentHologramDisplay which can be used to create custom holograms.
 ```xml
 <repositories>
-    <!-- HolographicDisplays -->
+    <!-- Decent Hologram -->
+    <repository>
+        <id>jitpack</id>
+        <url>https://jitpack.io/</url>
+    </repository>
     <repository>
         <id>codemc-repo</id>
         <url>https://repo.codemc.io/repository/maven-public/</url>
@@ -29,44 +37,42 @@ Includes an abstract HolographicDisplay which can be used to create custom holog
 ```
 ```xml
 <dependencies>
+    <!-- Decent Hologram Display Class-->
     <dependency>
-        <groupId>com.alpsbte.alpslib</groupId>
-        <artifactId>alpslib-hologram</artifactId>
+        <groupId>com.aseanbte.aseanlib</groupId>
+        <artifactId>aseanlib-hologram</artifactId>
         <version>latest</version>
         <scope>compile</scope>
     </dependency>
-    
-    <!-- HolographicDisplays -->
+    <!-- Decent Hologram -->
     <dependency>
-        <groupId>me.filoghost.holographicdisplays</groupId>
-        <artifactId>holographicdisplays-api</artifactId>
-        <version>3.0.0</version>
+        <groupId>com.github.decentsoftware-eu</groupId>
+        <artifactId>decentholograms</artifactId>
+        <version>2.8.6</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>
 ```
 
-### AlpsLib-IO
-Includes Config-Manager, Language-Manager and FTP-Manager.
+### AseanLib-NPC
+Fancy NPC plugin manager class with Decent Hologram as npc name-tag.
 ```xml
 <dependencies>
     <dependency>
-        <groupId>com.alpsbte.alpslib</groupId>
-        <artifactId>alpslib-io</artifactId>
-        <version>latest</version>
+      <groupId>com.aseanbte.aseanlib</groupId>
+      <artifactId>aseanlib-npc</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <!-- FancyNpcs Plugin -->
+    <dependency>
+        <groupId>de.oliver</groupId>
+        <artifactId>FancyNpcs</artifactId>
+        <version>2.0.5</version>
+        <scope>provided</scope>
     </dependency>
 </dependencies>
 ```
+---
+## Unimplemented
+The other module has no addition from alpslib package and can be ignored.
 
-### AlpsLib-Utils
-Includes ItemBuilder & LoreBuilder, CustomHeads and other useful utilities.
-```Important: This module is already included in the AlpsLib-IO module.```
-```xml
-<dependencies>
-    <dependency>
-        <groupId>com.alpsbte.alpslib</groupId>
-        <artifactId>alpslib-utils</artifactId>
-        <version>latest</version>
-    </dependency>
-</dependencies>
-```
