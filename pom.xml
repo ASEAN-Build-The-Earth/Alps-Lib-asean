@@ -53,4 +53,11 @@
     <properties>
         <kotlin.version>1.6.0</kotlin.version>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/asean-build-the-earth/alps-lib-asean</url>
+        </repository>
+    </distributionManagement>
 </project>
