@@ -41,7 +41,7 @@ public class NpcHologram extends DecentHologramDisplay {
     private Location baseLocation;
 
     public NpcHologram(@NotNull String id, Location location, AbstractNpc npc) {
-        super(id, location.add(0, NPC_HOLOGRAM_Y, 0), false);
+        super(id, location.add(0, NPC_HOLOGRAM_Y, 0), true);
         this.npc = npc;
         this.baseLocation = location;
     }

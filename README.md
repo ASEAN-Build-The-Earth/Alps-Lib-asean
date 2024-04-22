@@ -61,7 +61,7 @@ Fancy NPC plugin manager class with Decent Hologram as npc name-tag.
     <dependency>
       <groupId>com.aseanbte.aseanlib</groupId>
       <artifactId>aseanlib-npc</artifactId>
-      <version>1.1.2</version>
+      <version>1.1.3</version>
     </dependency>
     <!-- FancyNpcs Plugin -->
     <dependency>
