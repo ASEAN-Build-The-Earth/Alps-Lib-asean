@@ -3,15 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>alpslib</artifactId>
-        <groupId>com.alpsbte.alpslib</groupId>
+        <artifactId>aseanlib</artifactId>
+        <groupId>com.aseanbte.aseanlib</groupId>
         <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>alpslib-libpsterra</artifactId>
+    <artifactId>aseanlib-libpsterra</artifactId>
 
-    <name>AlpsLib-LibPlotSystemTerra</name>
+    <name>AseanLib-LibPlotSystemTerra</name>
 
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -46,15 +46,15 @@
     <dependencies>
         <!-- utils from AlpsLib for item/lorebuilder + general utils -->
         <dependency>
-            <groupId>com.alpsbte.alpslib</groupId>
-            <artifactId>alpslib-utils</artifactId>
+            <groupId>com.aseanbte.aseanlib</groupId>
+            <artifactId>aseanlib-utils</artifactId>
             <version>1.1.0</version>
         </dependency>
 
         <!-- io from AlpsLib for config -->
         <dependency>
-            <groupId>com.alpsbte.alpslib</groupId>
-            <artifactId>alpslib-io</artifactId>
+            <groupId>com.aseanbte.aseanlib</groupId>
+            <artifactId>aseanlib-io</artifactId>
             <version>1.1.0</version>
         </dependency>
 

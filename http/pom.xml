@@ -3,15 +3,15 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>alpslib</artifactId>
-        <groupId>com.alpsbte.alpslib</groupId>
+        <artifactId>aseanlib</artifactId>
+        <groupId>com.aseanbte.aseanlib</groupId>
         <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>alpslib-http</artifactId>
+    <artifactId>aseanlib-http</artifactId>
 
-    <name>AlpsLib-Http</name>
+    <name>AseanLib-Http</name>
 
     <dependencies>
         <!-- JUnit 5 -->
@@ -65,7 +65,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.alpsbte.alpslib.http.HttpRequest</mainClass>
+                                    <mainClass>com.aseanbte.aseanlib.http.HttpRequest</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

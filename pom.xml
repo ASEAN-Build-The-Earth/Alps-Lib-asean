@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.alpsbte.alpslib</groupId>
-    <artifactId>alpslib</artifactId>
+    <groupId>com.aseanbte.aseanlib</groupId>
+    <artifactId>aseanlib</artifactId>
     <version>1.1.0</version>
     <packaging>pom</packaging>
 
-    <name>AlpsLib</name>
+    <name>AseanLib</name>
 
     <modules>
         <module>npc</module>
