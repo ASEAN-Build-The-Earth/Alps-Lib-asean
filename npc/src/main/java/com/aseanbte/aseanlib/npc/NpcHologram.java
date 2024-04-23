@@ -32,7 +32,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.UUID;
+import java.util.Map;
+import java.util.List;
+import java.util.Collections;
+import java.util.ArrayList;
 
 public class NpcHologram extends DecentHologramDisplay {
     private static final double NPC_HOLOGRAM_Y = 2.3;
@@ -44,7 +49,7 @@ public class NpcHologram extends DecentHologramDisplay {
     private Location baseLocation;
 
     public NpcHologram(@NotNull String id, Location location, AbstractNpc npc) {
-        super(id, location.add(0, NPC_HOLOGRAM_Y, 0), true);
+        super(id, location.clone().add(0, NPC_HOLOGRAM_Y, 0), true);
         this.npc = npc;
         this.baseLocation = location;
     }
@@ -97,9 +102,8 @@ public class NpcHologram extends DecentHologramDisplay {
     }
 
     public void setActionTitleVisibility(UUID playerUUID, boolean isVisible) {
-        Location nameLocation = baseLocation.clone();
         isActionTitleVisible.put(playerUUID, isVisible);
-        getHologram(playerUUID).setLocation(nameLocation.add(0, isActionTitleVisible(playerUUID) ?
+        getHologram(playerUUID).setLocation(baseLocation.clone().add(0, isActionTitleVisible(playerUUID) ?
             NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
         reload(playerUUID);
     }

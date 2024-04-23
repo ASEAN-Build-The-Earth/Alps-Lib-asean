@@ -31,6 +31,8 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.util.Objects;
+
 
 public class DecentHologramListener implements Listener {
     public DecentHologramListener() {
@@ -38,10 +40,9 @@ public class DecentHologramListener implements Listener {
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {
-        // Create player's hologram each time they join
         for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
             if (display.getLocation() == null) return;
-            if (display.getLocation().getWorld().getName().equals(event.getPlayer().getWorld().getName()))
+            if (Objects.requireNonNull(display.getLocation().getWorld()).getName().equals(event.getPlayer().getWorld().getName()))
                 display.create(event.getPlayer());
         }
 
@@ -58,7 +59,7 @@ public class DecentHologramListener implements Listener {
     public void onPlayerChangedWorldEvent(PlayerChangedWorldEvent event) {
         for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
             if (display.getLocation() == null) return;
-            if (display.getLocation().getWorld().getName().equals(event.getFrom().getName())) display.remove(event.getPlayer().getUniqueId());
+            if (Objects.requireNonNull(display.getLocation().getWorld()).getName().equals(event.getFrom().getName())) display.remove(event.getPlayer().getUniqueId());
             else if (display.getLocation().getWorld().getName().equals(event.getPlayer().getWorld().getName())) display.create(event.getPlayer());
         }
 

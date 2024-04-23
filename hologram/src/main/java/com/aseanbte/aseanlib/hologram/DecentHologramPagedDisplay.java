@@ -44,7 +44,7 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
     private int changeState = 0;
     private long changeDelay = 0;
     private final Plugin plugin;
-    private static String contentSeparator = "§7---------------";
+    private static final String contentSeparator = "§7---------------";
     protected boolean automaticallySkipPage = true;
 
     public DecentHologramPagedDisplay(@NotNull String id, Location position, boolean isEnabled, @NotNull Plugin plugin) {

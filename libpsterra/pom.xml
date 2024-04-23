@@ -5,7 +5,7 @@
     <parent>
         <artifactId>aseanlib</artifactId>
         <groupId>com.aseanbte.aseanlib</groupId>
-        <version>1.1.4</version>
+        <version>1.1.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -48,14 +48,14 @@
         <dependency>
             <groupId>com.aseanbte.aseanlib</groupId>
             <artifactId>aseanlib-utils</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
         </dependency>
 
         <!-- io from AlpsLib for config -->
         <dependency>
             <groupId>com.aseanbte.aseanlib</groupId>
             <artifactId>aseanlib-io</artifactId>
-            <version>1.1.4</version>
+            <version>1.1.5</version>
         </dependency>
 
 <!-- Spigot -->

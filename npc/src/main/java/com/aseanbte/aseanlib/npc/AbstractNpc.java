@@ -37,7 +37,7 @@ import java.util.*;
 
 public abstract class AbstractNpc {
     public static final List<AbstractNpc> activeNPCs = new ArrayList<>();
-    private static final String EMPTY_TAG = "<empty>";
+    private static final String EMPTY_TAG = "&f";
     private static final String IDENTIFIER_TAG = "alpslib_";
 
     public abstract String getDisplayName(UUID playerUUID);
@@ -78,7 +78,7 @@ public abstract class AbstractNpc {
         Bukkit.getScheduler().runTaskAsynchronously(FancyNpcs.getInstance().getPlugin(), () -> {
             npc.getData().showToPlayer(player.getUniqueId());
             npc.spawn(player);
-            if (hologram != null && player.getWorld().getName().equals(hologram.getLocation().getWorld().getName()))
+            if (hologram != null && player.getWorld().getName().equals(Objects.requireNonNull(hologram.getLocation().getWorld()).getName()))
                 hologram.create(player);
         });
     }
@@ -89,7 +89,7 @@ public abstract class AbstractNpc {
         npc.spawnForAll();
         if (hologram != null) {
             Bukkit.getOnlinePlayers().forEach(player -> {
-                if (player.getWorld().getName().equals(hologram.getLocation().getWorld().getName()))
+                if (player.getWorld().getName().equals(Objects.requireNonNull(hologram.getLocation().getWorld()).getName()))
                     Bukkit.getScheduler().runTask(FancyNpcs.getInstance().getPlugin(), () -> hologram.create(player));
             });
         }
