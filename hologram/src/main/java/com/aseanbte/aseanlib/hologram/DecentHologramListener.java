@@ -67,7 +67,9 @@ public class DecentHologramListener implements Listener {
     @EventHandler
     public void onHologramClick(HologramClickEvent event) {
         for (DecentHologramDisplay display : DecentHologramDisplay.activeDisplays) {
-            if (display.getLocation() == null | display.getClickListener() == null) continue;
+            if (display.getLocation() == null
+                | display.getClickListener() == null
+                | display.getHologram(event.getPlayer().getUniqueId()) == null) continue;
             if (display.getHologram(event.getPlayer().getUniqueId()).equals(event.getHologram()))
                 display.getClickListener().onClick(event);
         }

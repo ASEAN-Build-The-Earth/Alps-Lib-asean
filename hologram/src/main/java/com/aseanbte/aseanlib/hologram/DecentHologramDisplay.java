@@ -192,7 +192,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
             for(int i = 0; i < removeCount; ++i) {
                 int lineIndex = page.getLines().size() - 1;
                 if (lineIndex >= 0) {
-                    page.getLines().remove(lineIndex);
+                    DHAPI.removeHologramLine(page, lineIndex);
                 }
             }
         }

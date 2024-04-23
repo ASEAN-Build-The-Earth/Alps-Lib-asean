@@ -25,7 +25,10 @@
 package com.aseanbte.aseanlib.npc;
 
 import com.aseanbte.aseanlib.hologram.DecentHologramDisplay;
+import de.oliver.fancynpcs.FancyNpcs;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,9 +50,17 @@ public class NpcHologram extends DecentHologramDisplay {
     }
 
     @Override
-    public boolean hasViewPermission(UUID uuid) {
-        return npc.getNpc().getIsVisibleForPlayer().containsKey(uuid) && npc.getNpc().getIsVisibleForPlayer().get(uuid);
+    public void create(Player player) {
+        Bukkit.getScheduler().runTask(FancyNpcs.getInstance().getPlugin(), () -> {
+            if(npc.getNpc().getIsVisibleForPlayer().containsKey(player.getUniqueId())
+                    && npc.getNpc().getIsVisibleForPlayer().get(player.getUniqueId())) {
+                super.create(player);
+            }
+        });
     }
+
+    @Override
+    public boolean hasViewPermission(UUID uuid) { return true; }
 
     @Override
     public ItemStack getItem() {
@@ -79,13 +90,17 @@ public class NpcHologram extends DecentHologramDisplay {
     @Override
     public void setLocation(Location newLocation) {
         this.baseLocation = newLocation;
-        for (UUID playerUUID : getHolograms().keySet()) getHolograms().get(playerUUID)
-                .setLocation(newLocation.add(0, isActionTitleVisible(playerUUID) ? NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
+        for (UUID playerUUID : getHolograms().keySet())
+            getHolograms().get(playerUUID)
+            .setLocation(newLocation.add(0, isActionTitleVisible(playerUUID) ?
+                NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
     }
 
     public void setActionTitleVisibility(UUID playerUUID, boolean isVisible) {
+        Location nameLocation = baseLocation.clone();
         isActionTitleVisible.put(playerUUID, isVisible);
-        getHologram(playerUUID).setLocation(baseLocation.add(0, isActionTitleVisible(playerUUID) ? NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
+        getHologram(playerUUID).setLocation(nameLocation.add(0, isActionTitleVisible(playerUUID) ?
+            NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
         reload(playerUUID);
     }
 

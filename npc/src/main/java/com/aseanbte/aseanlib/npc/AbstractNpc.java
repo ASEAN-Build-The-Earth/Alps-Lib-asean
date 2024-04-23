@@ -75,10 +75,12 @@ public abstract class AbstractNpc {
 
     public void show(Player player) {
         if (npc == null) return;
-        npc.getData().showToPlayer(player.getUniqueId());
-        npc.spawn(player);
-        if (hologram != null && player.getWorld().getName().equals(hologram.getLocation().getWorld().getName()))
-            Bukkit.getScheduler().runTask(FancyNpcs.getInstance().getPlugin(), () -> hologram.create(player));
+        Bukkit.getScheduler().runTaskAsynchronously(FancyNpcs.getInstance().getPlugin(), () -> {
+            npc.getData().showToPlayer(player.getUniqueId());
+            npc.spawn(player);
+            if (hologram != null && player.getWorld().getName().equals(hologram.getLocation().getWorld().getName()))
+                hologram.create(player);
+        });
     }
 
     public void showForAll() {
