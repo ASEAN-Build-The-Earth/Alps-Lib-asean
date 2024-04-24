@@ -12,10 +12,6 @@
             <id>github</id>
             <repositories>
                 <repository>
-                    <id>central</id>
-                    <url>https://repo1.maven.org/maven2</url>
-                </repository>
-                <repository>
                     <id>github</id>
                     <url>https://maven.pkg.github.com/asean-build-the-earth/alps-lib-asean</url>
                     <snapshots>
@@ -30,7 +26,6 @@
         <server>
             <id>aseanbte-repo</id>
             <username>asean-build-the-earth</username>
-            <!-- Public token with `read:packages` scope -->
             <password>${ACCESS_TOKEN}</password>
         </server>
     </servers>

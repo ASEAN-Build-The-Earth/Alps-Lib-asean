@@ -5,7 +5,7 @@
     <parent>
         <artifactId>aseanlib</artifactId>
         <groupId>com.aseanbte.aseanlib</groupId>
-        <version>1.1.5</version>
+        <version>1.1.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,6 +17,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <build.number>1.1.6</build.number>
     </properties>
 
     <repositories>

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, ASEAN Build The Earth <bteasean@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +33,20 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Objects;
 
-
+/**
+ * Listener class for DecentHologram.<br/>
+ * This class listened for:<br/>
+ * [1] Create displays everytime a player joined.<br/>
+ * [2] Delete displays when a player quit.<br/>
+ * [3] Re-create and delete displays when a player changes world.<br/>
+ * [4] HologramClickEvent callback to any registered hologram.<br/>
+ * @see PlayerJoinEvent
+ * @see PlayerQuitEvent
+ * @see PlayerChangedWorldEvent
+ * @see HologramClickEvent
+ */
 public class DecentHologramListener implements Listener {
-    public DecentHologramListener() {
-    }
+    public DecentHologramListener() {}
 
     @EventHandler
     public void onPlayerJoinEvent(PlayerJoinEvent event) {

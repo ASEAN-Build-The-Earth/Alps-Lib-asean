@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, ASEAN Build The Earth <bteasean@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
@@ -52,8 +53,8 @@ import org.jetbrains.annotations.Nullable;
 public abstract class DecentHologramDisplay implements DecentHologramContent {
     public static List<DecentHologramDisplay> activeDisplays = new ArrayList<>();
     protected final HashMap<UUID, Hologram> holograms = new HashMap<>();
-    private ClickAction clickListener;
     public static final String contentSeparator = "§7---------------";
+    private ClickAction clickListener;
     private final String id;
     private Location location;
     private boolean isEnabled;
@@ -68,7 +69,7 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
 
     /**
      * Register hologram listener as DecentHologramListener Class.
-     * {@code DecentHologramDisplay.registerPlugin(this);}
+     * @see DecentHologramDisplay#registerPlugin(Plugin)
      * @param plugin Plugin in use of this library.
      */
     public static void registerPlugin(Plugin plugin) {
@@ -278,18 +279,15 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
      * @param item any minecraft item as an ItemStack to be inserted
      */
     protected static void replaceLine(HologramPage page, int line, ItemStack item) {
-        if (page.getLines().size() < line + 1) {
-            DHAPI.addHologramLine(page, item);
-        } else {
-            HologramLine hologramLine = page.getLines().get(line);
-            if (hologramLine != null) {
-
-                DHAPI.insertHologramLine(page, line, item);
-                DHAPI.removeHologramLine(page, line + 1);
+        try {
+            if (page.getLines().size() < line + 1) {
+                DHAPI.addHologramLine(page, item);
             } else {
-                DHAPI.setHologramLine(page, line,  item);
-
+                HologramLine hologramLine = page.getLines().get(line);
+                DHAPI.setHologramLine(hologramLine,  item);
             }
+        } catch (IllegalArgumentException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "[DHAPI] Trying to set invalid HologramLine ", ex);
         }
     }
 
@@ -300,18 +298,16 @@ public abstract class DecentHologramDisplay implements DecentHologramContent {
      * @param text The text to be written on
      */
     protected static void replaceLine(HologramPage page, int line, String text) {
-        if (page.getLines().size() < line + 1) {
-            DHAPI.addHologramLine(page, text);
-        } else {
-            HologramLine hologramLine = page.getLines().get(line);
-            if (hologramLine != null) {
-                DHAPI.insertHologramLine(page, line, text);
-                DHAPI.removeHologramLine(page, line + 1);
+        try {
+            if (page.getLines().size() < line + 1) {
+                DHAPI.addHologramLine(page, text);
             } else {
-                DHAPI.setHologramLine(page, line,  text);
+                HologramLine hologramLine = page.getLines().get(line);
+                DHAPI.setHologramLine(hologramLine, text);
             }
+        } catch (IllegalArgumentException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "[DHAPI] Trying to set invalid HologramLine", ex);
         }
-
     }
 
     /**

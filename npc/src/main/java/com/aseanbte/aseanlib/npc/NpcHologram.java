@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, ASEAN Build The Earth <bteasean@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -39,6 +39,9 @@ import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
 
+/**
+ * NPC name-tag hologram to show above npc head.
+ */
 public class NpcHologram extends DecentHologramDisplay {
     private static final double NPC_HOLOGRAM_Y = 2.3;
     private static final double NPC_HOLOGRAM_Y_WITH_ACTION_TITLE = 2.6;
@@ -48,12 +51,22 @@ public class NpcHologram extends DecentHologramDisplay {
 
     private Location baseLocation;
 
+    /**
+     * Create a new NPC name-tag Hologram.
+     * @param id Any identifier to be set as hologram name.
+     * @param location The location to create this hologram.
+     * @param npc AbstractNpc to be assigned to this hologram.
+     */
     public NpcHologram(@NotNull String id, Location location, AbstractNpc npc) {
         super(id, location.clone().add(0, NPC_HOLOGRAM_Y, 0), true);
         this.npc = npc;
         this.baseLocation = location;
     }
 
+    /**
+     * Create NPC name-tag, with view permission set to its assigned NPC's viewing player.
+     * @param player The player that will be able to view this hologram
+     */
     @Override
     public void create(Player player) {
         Bukkit.getScheduler().runTask(FancyNpcs.getInstance().getPlugin(), () -> {
@@ -64,8 +77,14 @@ public class NpcHologram extends DecentHologramDisplay {
         });
     }
 
+    /**
+     * This always returns true since view permission check
+     * of this hologram happens before creating the hologram.
+     * @param playerUUID Focused player
+     * @return TRUE
+     */
     @Override
-    public boolean hasViewPermission(UUID uuid) { return true; }
+    public boolean hasViewPermission(UUID playerUUID) { return true; }
 
     @Override
     public ItemStack getItem() {
@@ -101,6 +120,11 @@ public class NpcHologram extends DecentHologramDisplay {
                 NPC_HOLOGRAM_Y_WITH_ACTION_TITLE : NPC_HOLOGRAM_Y, 0));
     }
 
+    /**
+     * Update this name-tag hologram's location and visibility.
+     * @param playerUUID Focused player.
+     * @param isVisible Set the hologram visible or not.
+     */
     public void setActionTitleVisibility(UUID playerUUID, boolean isVisible) {
         isActionTitleVisible.put(playerUUID, isVisible);
         getHologram(playerUUID).setLocation(baseLocation.clone().add(0, isActionTitleVisible(playerUUID) ?
@@ -108,6 +132,11 @@ public class NpcHologram extends DecentHologramDisplay {
         reload(playerUUID);
     }
 
+    /**
+     * Get whether this hologram is visible.
+     * @param playerUUID Focused player.
+     * @return isActionTitleVisible
+     */
     public boolean isActionTitleVisible(UUID playerUUID) {
         return isActionTitleVisible.getOrDefault(playerUUID, false);
     }

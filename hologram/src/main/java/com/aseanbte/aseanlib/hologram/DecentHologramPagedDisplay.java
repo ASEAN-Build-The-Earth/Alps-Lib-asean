@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- *  Copyright © 2023, Alps BTE <bte.atchli@gmail.com>
+ *  Copyright © 2023, ASEAN Build The Earth <bteasean@gmail.com>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ package com.aseanbte.aseanlib.hologram;
 
 import eu.decentsoftware.holograms.api.DHAPI;
 import eu.decentsoftware.holograms.api.holograms.Hologram;
+import eu.decentsoftware.holograms.event.HologramClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -34,48 +35,79 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.UUID;
+import java.util.Collections;
 import java.util.logging.Level;
 
+/**
+ * Extended class to create paged hologram display
+ */
 public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
-    protected String sortByPage;
     public BukkitTask changePageTask = null;
+    private final Plugin plugin;
     private int pageCount = 1;
+    private int currentPage = 0;
     private int changeState = 0;
     private long changeDelay = 0;
-    private final Plugin plugin;
-    private static final String contentSeparator = "§7---------------";
-    protected boolean automaticallySkipPage = true;
+    protected boolean automaticallySkipPage;
 
-    public DecentHologramPagedDisplay(@NotNull String id, Location position, boolean isEnabled, @NotNull Plugin plugin) {
-        super(id, position, isEnabled);
+    /**
+     * @param id Hologram identifier for creating DecentHologram name, this will later be concatenated as "${player.uuid}-${id}"
+     * @param location The location in a world to create hologram.
+     * @param isEnabled Force enable or disable this hologram on create, this will not register new hologram in the hashmap.
+     * @param plugin Assign a plugin reference and this hologram pages will be automatically turns by a fixed interval.
+     */
+    public DecentHologramPagedDisplay(@NotNull String id, Location location, boolean isEnabled, @NotNull Plugin plugin) {
+        super(id, location, isEnabled);
         this.plugin = plugin;
+        this.automaticallySkipPage =  true;
     }
 
+    /**
+     * @param id Hologram identifier for creating DecentHologram name, this will later be concatenated as "${player.uuid}-${id}"
+     * @param location The location in a world to create hologram.
+     * @param isEnabled Force enable or disable this hologram on create, this will not register new hologram in the hashmap.
+     */
+    public DecentHologramPagedDisplay(@NotNull String id, Location location, boolean isEnabled) {
+        super(id, location, isEnabled);
+        this.plugin = null;
+        this.automaticallySkipPage = false;
+    }
+
+    /**
+     * Set a number of pages in this hologram.
+     * @param pageCount Pages size, this should be in sync with how many member page contents has.
+     */
     public void setPageCount(int pageCount) {
         this.pageCount = pageCount;
     }
 
     @Override
     public void create(Player player) {
-        if (getPages() != null && getPages().size() > 0) sortByPage = getPages().get(0);
-        if(!super.isEnabled()) return;
-        if (this.hasViewPermission(player.getUniqueId())) {
-            if (this.holograms.containsKey(player.getUniqueId())) {
-                this.reload(player.getUniqueId());
-            } else {
-                Bukkit.getLogger().log(Level.INFO, "[DHAPI] Created display ID: " + super.getId() + " For player: " + player.getUniqueId());
-                Hologram hologram = DHAPI.createHologram(player.getUniqueId() + "-" + super.getId(), super.getLocation());
-                for(int i = 1; i <= pageCount; i++) hologram.addPage();
+        if (!super.isEnabled() | !this.hasViewPermission(player.getUniqueId())) return;
+        if (this.holograms.containsKey(player.getUniqueId())) this.reload(player.getUniqueId());
+        else {
+            Bukkit.getLogger().log(Level.INFO, "[DHAPI] Created display ID: " + super.getId() + " For player: " + player.getUniqueId());
+            Hologram hologram = DHAPI.createHologram(player.getUniqueId() + "-" + super.getId(), super.getLocation());
+            for(int i = 1; i <= pageCount; i++) hologram.addPage();
 
-                // Allow only player to see
-                hologram.setDefaultVisibleState(false);
-                hologram.setShowPlayer(player);
-                this.holograms.put(player.getUniqueId(), hologram);
-                this.reload(player.getUniqueId());
-            }
+            // Allow only player to see
+            hologram.setDefaultVisibleState(false);
+            hologram.setShowPlayer(player);
+
+            // Put new hologram to hashmap
+            this.holograms.put(player.getUniqueId(), hologram);
+
+            // Write hologram data-lines and assign click listener
+            this.reload(player.getUniqueId());
+            if(!automaticallySkipPage) super.setClickListener(this::assignClickListener);
+            else startChangePageTask(player, hologram);
         }
+
     }
+
 
     @Override
     public void reload(UUID playerUUID) {
@@ -103,30 +135,94 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
 
     }
 
-    private void startChangePageTask() {
-        final long interval = getInterval();
-        changeState = 0;
-        changeDelay = interval / contentSeparator.length();
+    /**
+     * getHeader as paged list, the list indexing will be mapped to hologram page one by one.<br/>
+     * If the parent list only have one index, will use the index for every pageCount.
+     * @param playerUUID Focused player.
+     * @return Lists of DataLine, with a parent List being a page indexing.
+     */
+    public List<List<DataLine<?>>> getPagedHeader(UUID playerUUID) {
+        return new ArrayList<>(Collections.singletonList(getHeader(playerUUID)));
+    }
 
+    /**
+     * getContent as paged list, the list indexing will be mapped to hologram page one by one.<br/>
+     * If the parent list only have one index, will use the index for every pageCount.
+     * @param playerUUID Focused player.
+     * @return Lists of DataLine, with a parent List being a page indexing.
+     */
+    public List<List<DataLine<?>>> getPagedContent(UUID playerUUID) {
+        return new ArrayList<>(Collections.singletonList(getContent(playerUUID)));
+    }
+
+    /**
+     * getFooter as paged list, the list indexing will be mapped to hologram page one by one.<br/>
+     * If the parent list only have one index, will use the index for every pageCount.
+     * @param playerUUID Focused player.
+     * @return Lists of DataLine, with a parent List being a page indexing.
+     */
+    public List<List<DataLine<?>>> getPagedFooter(UUID playerUUID) {
+        return new ArrayList<>(Collections.singletonList(getFooter(playerUUID)));
+    }
+
+    /**
+     * Override this function to implement click action of the hologram,
+     * defaulted to calling next page.
+     * @param event Click event callback
+     * @see HologramClickEvent
+     */
+    public void assignClickListener(HologramClickEvent event) {
+        nextPage(event.getPlayer(), event.getHologram());
+    }
+
+    /**
+     * Recursively change pages of this hologram by a fixed interval forever.
+     * @param player Focused player.
+     * @param hologram Focused hologram.
+     */
+    private void startChangePageTask(Player player, Hologram hologram) {
+        // Fixed interval value
+        final long interval = getInterval();
+        changeDelay = interval / contentSeparator.length();
+        changeState = 0;
+
+        // Cancel if no page, and cancel previous task to start anew
+        if(pageCount <= 1 | plugin == null) return;
         if (changePageTask != null) changePageTask.cancel();
+
+        // Count every 1 seconds, if reaches a fixed interval, recursive call a new task.
         changePageTask = new BukkitRunnable() {
             @Override
             public void run() {
-                if (changeState == 0) getHolograms().keySet().forEach(uuid -> reload(uuid));
                 if (interval == 0) return;
                 if (changeState >= changeDelay) {
-                    if (automaticallySkipPage) nextPage();
+                    if (automaticallySkipPage) {
+                        nextPage(player, hologram);
+                        startChangePageTask(player, hologram);
+                    }
                     else changePageTask.cancel();
                 } else {
+                    onTick(player, hologram);
                     changeState++;
-                    // getHolograms().forEach((uuid, holo) -> updateDataLines(holo,holo.getPage(0).getLines().size() - 1, getFooter(uuid)));
                 }
+
             }
         }.runTaskTimer(plugin, 0, changeDelay);
     }
 
+    /**
+     * If provided plugin reference, override this method to set interval value in milliseconds.
+     * @return Plugin's check interval for when turning to next page automatically.
+     */
+    public long getInterval() { return 15 * 20L; }
 
-    public List<DataLine<?>> getFooter(UUID playerUUID) {
+    /**
+     * If provided plugin reference, override this method to create any animation to hologram each tick of one second.
+     * This is defaulted to footer color changing animation as a tick increased.
+     * @param player Focused player.
+     * @param hologram Focused hologram.
+     */
+    public void onTick(Player player, Hologram hologram) {
         int footerLength = contentSeparator.length();
         int highlightCount = (int) (((float) changeState / changeDelay) * footerLength);
 
@@ -134,47 +230,34 @@ public abstract class DecentHologramPagedDisplay extends DecentHologramDisplay {
         for (int i = 0; i < highlightCount; i++) {
             highlighted.append("-");
         }
+
         StringBuilder notH = new StringBuilder();
         for (int i = 0; i < footerLength - highlightCount; i++) {
             notH.append("-");
         }
 
-        return Collections.singletonList(new TextLine("§e" + highlighted + "§7" + notH));
+        replaceLine(hologram.getPage(player),
+                hologram.getPage(player).size() - 1,
+                "§e" + highlighted + "§7" + notH);
     }
 
-    @Override
-    public void remove(UUID playerUUID) {
-        super.remove(playerUUID);
-    }
-
-    public abstract long getInterval();
-
-    public abstract List<String> getPages();
-    public List<List<DataLine<?>>> getPagedHeader(UUID playerUUID) { return new ArrayList<>(Collections.singletonList(getHeader(playerUUID))); }
-    public List<List<DataLine<?>>> getPagedContent(UUID playerUUID) { return new ArrayList<>(Collections.singletonList(getContent(playerUUID))); }
-    public List<List<DataLine<?>>> getPagedFooter(UUID playerUUID) { return new ArrayList<>(Collections.singletonList(getFooter(playerUUID))); }
-
-    public void nextPage() {
-        String next = getNextListItem(getPages(), sortByPage);
-        sortByPage = next == null ? getPages().get(0) : next;
-        startChangePageTask();
-    }
-
-    // TODO: UNTESTED
-    public void previousPage() {
-        int index = getPages().indexOf(sortByPage);
-        if (index == 0) {
-            sortByPage = getPages().get(getPages().size() - 1); // Wrap around to the last page
-        } else {
-            sortByPage = getPages().get(index - 1); // Go to the previous page
+    /**
+     * Turn a new page to player.<br/>
+     * Note that currently there's no previous page function,
+     * calling this beyond page size will loop back to the first page.
+     * @see Hologram#show(Player, int)
+     * @param player Focused player.
+     * @param hologram Focused hologram.
+     */
+    public void nextPage(Player player, Hologram hologram) {
+        try {
+            int nextViewPage = currentPage + 1;
+            if(nextViewPage == pageCount) nextViewPage = 0;
+            hologram.show(player, nextViewPage);
+            currentPage = nextViewPage;
         }
-        startChangePageTask();
-    }
-
-    private static <T> T getNextListItem(List<T> haystack, T needle) {
-        if(!haystack.contains(needle) || haystack.indexOf(needle) + 1 >= haystack.size()) {
-            return null;
+        catch (IndexOutOfBoundsException ex) {
+            Bukkit.getLogger().log(Level.SEVERE, "[DHAPI] Hologram page indexing out of bounds", ex);
         }
-        return haystack.get(haystack.indexOf(needle) + 1);
     }
 }
